@@ -15,7 +15,7 @@ raft:
   data_dir: /var/lib/patroni/raft
   self_addr: {{ ansible_host }}:{{ patroni_raft_port }}
   partner_addrs:
-{% for host in groups['crowdsec_ha'] %}
+{% for host in groups['crowdsec_containers'] %}
 {% if hostvars[host]['ansible_host'] != ansible_host %}
     - {{ hostvars[host]['ansible_host'] }}:{{ patroni_raft_port }}
 {% endif %}

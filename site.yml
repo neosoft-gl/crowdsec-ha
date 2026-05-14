@@ -6,13 +6,13 @@
 # ============================================================
 
 - name: Configurare sistem de baza pe toate nodurile
-  hosts: crowdsec_ha
+  hosts: crowdsec_containers
   become: yes
   roles:
     - common
 
 - name: Deploy PostgreSQL HA
-  hosts: crowdsec_ha
+  hosts: crowdsec_containers
   become: yes
   serial:
     - 1   # Mai intai primary, apoi replica
@@ -21,13 +21,13 @@
     - postgresql
 
 - name: Deploy CrowdSec
-  hosts: crowdsec_ha
+  hosts: crowdsec_containers
   become: yes
   roles:
     - crowdsec
 
 - name: Deploy Keepalived (HA VIP)
-  hosts: crowdsec_ha
+  hosts: crowdsec_containers
   become: yes
   roles:
     - keepalived

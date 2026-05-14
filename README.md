@@ -6,7 +6,7 @@
                          |
           +--------------+--------------+
           |                             |
-       node1: 10.10.100.171          node2: 10.10.100.172
+    crowdsec1: 10.10.100.171      crowdsec2: 10.10.100.172
    [PostgreSQL PRIMARY]    <-->  [PostgreSQL REPLICA]
    [Patroni LEADER]     Raft    [Patroni FOLLOWER]
    [CrowdSec LAPI]               [CrowdSec LAPI]
@@ -104,22 +104,22 @@ Output asteptat:
 + Cluster: crowdsec-ha ------+----+-----------+
 | Member | Host            | Role    | State   | TL | Lag in MB |
 +--------+-----------------+---------+---------+----+-----------+
-| node1  | 10.10.100.171:5432 | Leader  | running |  1 |           |
-| node2  | 10.10.100.172:5432 | Replica | running |  1 |         0 |
+| crowdsec1 | 10.10.100.171:5432 | Leader  | running |  1 |           |
+| crowdsec2 | 10.10.100.172:5432 | Replica | running |  1 |         0 |
 +--------+-----------------+---------+---------+----+-----------+
 ```
 
 ### Test failover automat
 ```bash
-# Opreste Patroni pe primary (node1) - simuleaza crash
-systemctl stop patroni   # pe node1
+# Opreste Patroni pe primary (crowdsec1) - simuleaza crash
+systemctl stop patroni   # pe crowdsec1
 
-# In ~30s, node2 devine primary automat
-# Verifica VIP pe node2:
+# In ~30s, crowdsec2 devine primary automat
+# Verifica VIP pe crowdsec2:
 ip addr show eth0 | grep 10.10.100.21
 
 # Verifica cluster:
-patronictl -c /etc/patroni/patroni.yml list   # pe node2
+patronictl -c /etc/patroni/patroni.yml list   # pe crowdsec2
 ```
 
 ### Switchover planificat (fara downtime)

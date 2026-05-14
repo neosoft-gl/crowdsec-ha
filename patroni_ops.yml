@@ -6,7 +6,7 @@
 #   ansible-playbook patroni_ops.yml --tags switchover
 
 - name: Operatii cluster Patroni
-  hosts: crowdsec_ha
+  hosts: crowdsec_containers
   become: yes
   gather_facts: no
 

@@ -22,7 +22,7 @@
   become_user: postgres
   command: >
     pg_basebackup
-    -h {{ hostvars[groups['crowdsec_ha'] | select('match', 'node1') | first]['ansible_host'] }}
+    -h {{ hostvars[groups['crowdsec_containers'] | select('match', 'crowdsec1') | first]['ansible_host'] }}
     -U {{ postgresql_replication_user }}
     -D {{ postgresql_data_dir }}
     -P -Xs -R
