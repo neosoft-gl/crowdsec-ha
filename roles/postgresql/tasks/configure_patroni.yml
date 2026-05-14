@@ -147,3 +147,26 @@
     state: present
   run_once: true
   delegate_to: "{{ groups['crowdsec_containers'] | first }}"
+
+- name: Setare owner baza CrowdSec
+  become: yes
+  become_user: postgres
+  postgresql_query:
+    db: postgres
+    query: "ALTER DATABASE {{ postgresql_crowdsec_db }} OWNER TO {{ postgresql_crowdsec_user }};"
+  run_once: true
+  delegate_to: "{{ groups['crowdsec_containers'] | first }}"
+
+- name: Grant CREATE pe schema public pentru CrowdSec
+  become: yes
+  become_user: postgres
+  postgresql_query:
+    db: "{{ postgresql_crowdsec_db }}"
+    query: |
+      GRANT USAGE, CREATE ON SCHEMA public TO {{ postgresql_crowdsec_user }};
+      GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO {{ postgresql_crowdsec_user }};
+      GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO {{ postgresql_crowdsec_user }};
+      ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO {{ postgresql_crowdsec_user }};
+      ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON SEQUENCES TO {{ postgresql_crowdsec_user }};
+  run_once: true
+  delegate_to: "{{ groups['crowdsec_containers'] | first }}"
