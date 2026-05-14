@@ -1,7 +1,6 @@
 ---
 common:
   daemonize: true
-  pid_file: /var/run/crowdsec/crowdsec.pid
   log_media: file
   log_level: info
   log_dir: /var/log/crowdsec/
@@ -39,7 +38,6 @@ db_config:
   port: {{ postgresql_port }}
   sslmode: disable
   max_open_conns: 10
-  flush_ca: 24h
 
 api:
   client:
