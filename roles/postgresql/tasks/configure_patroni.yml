@@ -1,4 +1,44 @@
 ---
+- name: Oprire servicii pentru reset bootstrap (optional)
+  systemd:
+    name: "{{ item }}"
+    state: stopped
+  loop:
+    - patroni
+    - postgresql
+  ignore_errors: yes
+  when: patroni_force_reinit | bool
+
+- name: Stergere state Raft Patroni (optional)
+  file:
+    path: /var/lib/patroni/raft
+    state: absent
+  when: patroni_force_reinit | bool
+
+- name: Stergere PGDATA existent (optional)
+  file:
+    path: "{{ postgresql_data_dir }}"
+    state: absent
+  when: patroni_force_reinit | bool
+
+- name: Re-creare director Raft Patroni (optional)
+  file:
+    path: /var/lib/patroni/raft
+    state: directory
+    owner: postgres
+    group: postgres
+    mode: '0700'
+  when: patroni_force_reinit | bool
+
+- name: Re-creare PGDATA gol (optional)
+  file:
+    path: "{{ postgresql_data_dir }}"
+    state: directory
+    owner: postgres
+    group: postgres
+    mode: '0700'
+  when: patroni_force_reinit | bool
+
 - name: Configurare patroni.yml
   template:
     src: patroni.yml.j2

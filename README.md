@@ -88,6 +88,14 @@ ansible-playbook check_status.yml
 
 Nota: rolul PostgreSQL/Patroni trebuie rulat pe ambele noduri in acelasi timp (quorum Raft la 2 noduri).
 
+Pentru noduri clonate LXC cu eroare "system ID mismatch", ruleaza o singura data bootstrap curat:
+
+```bash
+ansible-playbook site.yml -e patroni_force_reinit=true
+```
+
+Dupa ce clusterul porneste corect, revino la rularea normala (fara acest flag).
+
 ---
 
 ## Verificari post-deploy
