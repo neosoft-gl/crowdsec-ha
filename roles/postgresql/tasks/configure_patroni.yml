@@ -29,6 +29,43 @@
     state: started
     enabled: yes
 
+# Verifica daca Patroni porneste corect inainte sa asteptam portul PostgreSQL
+- name: Asteptare serviciu Patroni activ
+  command: systemctl is-active patroni
+  register: patroni_active
+  changed_when: false
+  failed_when: false
+  retries: 24
+  delay: 5
+  until: patroni_active.stdout == 'active'
+
+- name: Status systemd Patroni (debug la failure)
+  command: systemctl status patroni --no-pager -l
+  register: patroni_status
+  changed_when: false
+  failed_when: false
+  when: patroni_active.stdout != 'active'
+
+- name: Loguri Patroni (debug la failure)
+  command: journalctl -u patroni -n 120 --no-pager
+  register: patroni_journal
+  changed_when: false
+  failed_when: false
+  when: patroni_active.stdout != 'active'
+
+- name: Fail explicit daca Patroni nu a pornit
+  fail:
+    msg: |
+      Patroni nu a pornit pe {{ inventory_hostname }}.
+      systemctl is-active: {{ patroni_active.stdout | default('n/a') }}
+
+      --- systemctl status patroni ---
+      {{ patroni_status.stdout | default('n/a') }}
+
+      --- journalctl -u patroni -n 120 ---
+      {{ patroni_journal.stdout | default('n/a') }}
+  when: patroni_active.stdout != 'active'
+
 # Asteapta pana PostgreSQL local porneste pe nodul bootstrap
 - name: Asteptare PostgreSQL local disponibil
   wait_for:
@@ -36,6 +73,7 @@
     port: "{{ postgresql_port }}"
     delay: 5
     timeout: 180
+  when: patroni_active.stdout == 'active'
 
 # Creare utilizatori si baza de date o singura data, pe primul nod
 - name: Creare utilizator de replicare
