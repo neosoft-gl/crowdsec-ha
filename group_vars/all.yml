@@ -32,6 +32,7 @@ postgresql_crowdsec_password: "CrowdS3cDB@Pass!"
 # ========================
 patroni_api_port: 8008          # REST API Patroni (health, leader, failover)
 patroni_raft_port: 2380         # Port DCS Raft intern intre noduri
+patroni_venv_path: /opt/patroni-venv
 
 # ========================
 # CrowdSec

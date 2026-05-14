@@ -13,7 +13,7 @@
   tasks:
     # ---- STARE CLUSTER ------------------------------------------------
     - name: Stare cluster Patroni
-      command: patronictl -c /etc/patroni/patroni.yml list
+      command: "{{ patroni_venv_path }}/bin/patronictl -c /etc/patroni/patroni.yml list"
       register: patroni_list
       changed_when: false
       run_once: true
@@ -30,7 +30,7 @@
     # (Patroni face asta automat la crash - acest task e pentru switchover planificat)
     - name: Switchover planificat (muta primary pe alt nod)
       command: >
-        patronictl -c /etc/patroni/patroni.yml switchover crowdsec-ha
+        {{ patroni_venv_path }}/bin/patronictl -c /etc/patroni/patroni.yml switchover crowdsec-ha
         --force
       register: switchover_result
       changed_when: true
@@ -46,7 +46,7 @@
     # ---- RESTART ROLLING ----------------------------------------------
     - name: Restart rolling cluster (fara downtime)
       command: >
-        patronictl -c /etc/patroni/patroni.yml restart crowdsec-ha
+        {{ patroni_venv_path }}/bin/patronictl -c /etc/patroni/patroni.yml restart crowdsec-ha
         --force
       register: restart_result
       changed_when: true
@@ -56,7 +56,7 @@
     # ---- REINITIALIZARE REPLICA --------------------------------------
     - name: Reinitializare replica (reconstruieste din primary)
       command: >
-        patronictl -c /etc/patroni/patroni.yml reinit crowdsec-ha
+        {{ patroni_venv_path }}/bin/patronictl -c /etc/patroni/patroni.yml reinit crowdsec-ha
         {{ inventory_hostname }} --force
       register: reinit_result
       changed_when: true

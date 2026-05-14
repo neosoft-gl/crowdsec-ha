@@ -50,13 +50,20 @@
     enabled: no
   ignore_errors: yes
 
-- name: Instalare Patroni cu raft via pip
-  pip:
-    name:
-      - patroni[raft]
-      - psycopg2-binary
-    executable: pip3
-    state: present
+- name: Creare virtualenv Patroni
+  command: "/usr/bin/python3 -m venv {{ patroni_venv_path }}"
+  args:
+    creates: "{{ patroni_venv_path }}/bin/python"
+
+- name: Upgrade pip in virtualenv Patroni
+  command: "{{ patroni_venv_path }}/bin/pip install --upgrade pip"
+
+- name: Instalare Patroni cu raft in virtualenv
+  command: >
+    {{ patroni_venv_path }}/bin/pip install
+    patroni[raft]
+    psycopg2-binary
+
 
 - name: Creare director configurare Patroni
   file:
