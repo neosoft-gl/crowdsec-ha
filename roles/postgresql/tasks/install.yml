@@ -25,6 +25,7 @@
     curl -fsSL https://www.postgresql.org/media/keys/ACCC4CF8.asc | gpg --dearmor -o /etc/apt/keyrings/postgresql.gpg
   args:
     creates: /etc/apt/keyrings/postgresql.gpg
+    executable: /bin/bash
 
 - name: Adaugare repository PostgreSQL (signed-by)
   apt_repository:
