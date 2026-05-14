@@ -44,6 +44,10 @@
     status_code: [200, 503]
   register: patroni_leader_check
   changed_when: false
+  failed_when: false
+  retries: 36
+  delay: 5
+  until: patroni_leader_check.status is defined and patroni_leader_check.status in [200, 503]
 
 - name: Creare utilizator de replicare (doar pe lider)
   become: yes
