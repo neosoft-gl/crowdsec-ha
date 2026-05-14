@@ -20,15 +20,15 @@
     mode: '0755'
 
 - name: Descarcare cheie GPG PostgreSQL
-  get_url:
-    url: https://www.postgresql.org/media/keys/ACCC4CF8.asc
-    dest: /etc/apt/keyrings/postgresql.asc
-    mode: '0644'
-    force: no
+  shell: |
+    set -euo pipefail
+    curl -fsSL https://www.postgresql.org/media/keys/ACCC4CF8.asc | gpg --dearmor -o /etc/apt/keyrings/postgresql.gpg
+  args:
+    creates: /etc/apt/keyrings/postgresql.gpg
 
 - name: Adaugare repository PostgreSQL (signed-by)
   apt_repository:
-    repo: "deb [signed-by=/etc/apt/keyrings/postgresql.asc] https://apt.postgresql.org/pub/repos/apt {{ ansible_distribution_release }}-pgdg main"
+    repo: "deb [signed-by=/etc/apt/keyrings/postgresql.gpg] https://apt.postgresql.org/pub/repos/apt {{ ansible_distribution_release }}-pgdg main"
     state: present
     filename: pgdg
 

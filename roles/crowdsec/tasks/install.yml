@@ -16,15 +16,15 @@
     mode: '0755'
 
 - name: Descarcare cheie GPG CrowdSec
-  get_url:
-    url: https://packagecloud.io/crowdsec/crowdsec/gpgkey
-    dest: /etc/apt/keyrings/crowdsec.asc
-    mode: '0644'
-    force: no
+  shell: |
+    set -euo pipefail
+    curl -fsSL https://packagecloud.io/crowdsec/crowdsec/gpgkey | gpg --dearmor -o /etc/apt/keyrings/crowdsec.gpg
+  args:
+    creates: /etc/apt/keyrings/crowdsec.gpg
 
 - name: Adaugare repository CrowdSec (signed-by)
   apt_repository:
-    repo: "deb [signed-by=/etc/apt/keyrings/crowdsec.asc] https://packagecloud.io/crowdsec/crowdsec/{{ ansible_distribution | lower }} {{ ansible_distribution_release }} main"
+    repo: "deb [signed-by=/etc/apt/keyrings/crowdsec.gpg] https://packagecloud.io/crowdsec/crowdsec/{{ ansible_distribution | lower }} {{ ansible_distribution_release }} main"
     state: present
     filename: crowdsec
 
