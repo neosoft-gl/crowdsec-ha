@@ -12,13 +12,24 @@
     group: root
     mode: '0640'
 
-- name: Configurare local_api_credentials.yaml
+- name: Verificare existenta local_api_credentials.yaml
+  stat:
+    path: /etc/crowdsec/local_api_credentials.yaml
+  register: crowdsec_local_api_creds
+
+- name: Configurare local_api_credentials.yaml (doar daca lipseste)
   template:
     src: local_api_credentials.yaml.j2
     dest: /etc/crowdsec/local_api_credentials.yaml
     owner: root
     group: root
     mode: '0600'
+  when: not crowdsec_local_api_creds.stat.exists
+
+- name: Validare configuratie CrowdSec
+  command: crowdsec -c /etc/crowdsec/config.yaml -t -error
+  register: crowdsec_config_test
+  changed_when: false
 
 - name: Instalare colectii CrowdSec
   command: "cscli collections install {{ item }}"
