@@ -45,6 +45,34 @@
     name: crowdsec
     state: started
     enabled: yes
+  register: crowdsec_start
+  failed_when: false
+
+- name: Status systemd CrowdSec (debug la failure)
+  command: systemctl status crowdsec --no-pager -l
+  register: crowdsec_status
+  changed_when: false
+  failed_when: false
+  when: crowdsec_start is failed
+
+- name: Loguri CrowdSec (debug la failure)
+  command: journalctl -u crowdsec -n 120 --no-pager
+  register: crowdsec_journal
+  changed_when: false
+  failed_when: false
+  when: crowdsec_start is failed
+
+- name: Fail explicit daca CrowdSec nu a pornit
+  fail:
+    msg: |
+      CrowdSec nu a pornit pe {{ inventory_hostname }}.
+
+      --- systemctl status crowdsec ---
+      {{ crowdsec_status.stdout | default('n/a') }}
+
+      --- journalctl -u crowdsec -n 120 ---
+      {{ crowdsec_journal.stdout | default('n/a') }}
+  when: crowdsec_start is failed
 
 - name: Inregistrare in CrowdSec Console (optional)
   command: "cscli console enroll {{ crowdsec_enroll_key }}"

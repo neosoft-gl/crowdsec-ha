@@ -26,5 +26,6 @@
 - name: Deploy CrowdSec
   hosts: crowdsec_containers
   become: yes
+  serial: 1
   roles:
     - crowdsec
