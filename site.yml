@@ -17,14 +17,14 @@
   roles:
     - postgresql
 
-- name: Deploy CrowdSec
-  hosts: crowdsec_containers
-  become: yes
-  roles:
-    - crowdsec
-
 - name: Deploy Keepalived (HA VIP)
   hosts: crowdsec_containers
   become: yes
   roles:
     - keepalived
+
+- name: Deploy CrowdSec
+  hosts: crowdsec_containers
+  become: yes
+  roles:
+    - crowdsec

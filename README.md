@@ -40,8 +40,8 @@
 └── roles/
     ├── common/                # Configurare OS, nftables, /etc/hosts
     ├── postgresql/            # PostgreSQL + Patroni (Raft DCS, failover automat)
-    ├── crowdsec/              # CrowdSec cu PostgreSQL backend via VIP
-    └── keepalived/            # VIP - urmareste liderul Patroni via REST API
+    ├── keepalived/            # VIP - urmareste liderul Patroni via REST API
+    └── crowdsec/              # CrowdSec cu PostgreSQL backend via VIP
 ```
 
 ---
