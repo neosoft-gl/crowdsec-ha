@@ -14,9 +14,6 @@
 - name: Deploy PostgreSQL HA
   hosts: crowdsec_containers
   become: yes
-  serial:
-    - 1   # Mai intai primary, apoi replica
-    - 1
   roles:
     - postgresql
 

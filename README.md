@@ -86,6 +86,8 @@ ansible-playbook site.yml
 ansible-playbook check_status.yml
 ```
 
+Nota: rolul PostgreSQL/Patroni trebuie rulat pe ambele noduri in acelasi timp (quorum Raft la 2 noduri).
+
 ---
 
 ## Verificari post-deploy
